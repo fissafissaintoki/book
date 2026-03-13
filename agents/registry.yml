@@ -1,0 +1,123 @@
+version: 1
+system: stock-signal-multi-agent
+language: de
+agents:
+  - id: market_data_feed
+    name: Market Data Feed Agent
+    role: Holt Kurs-, Volumen- und Basis-Metadaten für beobachtete Ticker.
+    inputs:
+      - watchlist_tickers
+      - timeframe
+    outputs:
+      - normalized_market_snapshots
+    providers:
+      - yahoo_finance
+      - alpha_vantage
+    handoff_to:
+      - core_engine
+
+  - id: news_scraper
+    name: News Scraper Agent
+    role: Sammelt, dedupliziert und normalisiert Finanznachrichten je Aktie.
+    inputs:
+      - watchlist_tickers
+      - time_window
+    outputs:
+      - normalized_news_items
+    providers:
+      - newsapi
+      - rss
+      - gnews
+    handoff_to:
+      - core_engine
+
+  - id: sentiment_analyzer
+    name: Sentiment Analyzer Agent
+    role: Bewertet News-Sentiment und Unsicherheitssignale.
+    inputs:
+      - normalized_news_items
+    outputs:
+      - sentiment_scores
+    providers:
+      - nltk
+      - transformers
+    handoff_to:
+      - core_engine
+
+  - id: core_engine
+    name: Core Engine Agent
+    role: Führt Markt-, News- und Sentimentdaten zu einem einheitlichen Feature-Objekt zusammen.
+    inputs:
+      - normalized_market_snapshots
+      - normalized_news_items
+      - sentiment_scores
+    outputs:
+      - fused_feature_frames
+    handoff_to:
+      - pattern_matcher
+
+  - id: pattern_matcher
+    name: Pattern Matcher Agent
+    role: Ermittelt Oktagon-Logik-Pattern (Muster/Gegenmuster) aus Feature-Frames.
+    inputs:
+      - fused_feature_frames
+    outputs:
+      - pattern_events
+      - anti_pattern_events
+    handoff_to:
+      - signal_generator
+
+  - id: signal_generator
+    name: Signal Generator Agent
+    role: Erzeugt handelbare Signale mit Begründung, Konfidenz und Risiko-Hinweis.
+    inputs:
+      - pattern_events
+      - anti_pattern_events
+    outputs:
+      - ranked_signals
+    handoff_to:
+      - live_dashboard
+
+  - id: live_dashboard
+    name: Live Dashboard Agent
+    role: Rendert Signale, News-Block und Status für UI (Streamlit/React).
+    inputs:
+      - ranked_signals
+      - normalized_news_items
+    outputs:
+      - dashboard_view_model
+    channels:
+      - streamlit
+      - react
+    handoff_to:
+      - watchlists
+      - news_block
+      - alert_layer
+
+  - id: watchlists
+    name: Watchlist Agent
+    role: Verwaltet beobachtete Ticker, Priorisierung und Nutzerlisten.
+    inputs:
+      - dashboard_view_model
+    outputs:
+      - watchlist_state
+
+  - id: news_block
+    name: News-Block Agent
+    role: Zeigt pro Aktie gefilterte, priorisierte News mit Sentiment-Kontext.
+    inputs:
+      - dashboard_view_model
+    outputs:
+      - per_ticker_news_panels
+
+  - id: alert_layer
+    name: Alert Layer Agent
+    role: Versendet Alerts für kritische Signale und Statuswechsel.
+    inputs:
+      - dashboard_view_model
+    outputs:
+      - delivered_alerts
+    channels:
+      - email
+      - slack
+      - webhook
