@@ -65,3 +65,11 @@ Ich arbeite an der Schnittstelle von:
 
 **Operator Fischer**  
 Executive System Architect / High-Performance KI-Operator
+
+## Agenten (neu)
+
+Die von dir gewünschte Agenten-Pipeline wurde als Scaffold hinzugefügt:
+- `agents/registry.yml`
+- `agents/prompts/*.md`
+
+Startpunkt: `agents/README.md`
