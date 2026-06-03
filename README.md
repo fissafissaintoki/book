@@ -66,6 +66,17 @@ Ich arbeite an der Schnittstelle von:
 **Operator Fischer**  
 Executive System Architect / High-Performance KI-Operator
 
+## Produktionspipeline für Mappen
+
+Für Mappen- und Seitenproduktion gibt es jetzt eine eigene Operator-Logik:
+
+1. Codex prüft Referenz, Struktur, Dateilogik und Layoutanforderung.
+2. Codex erstellt technischen Produktionsplan, Assetschema und Review-Gates.
+3. Claude erhält daraus konsistente Seitenprompts und Mappe-Review-Kriterien.
+4. Generierung erfolgt Seite für Seite, nicht als kompletter Sammeloutput.
+
+Details: `docs/production-pipeline.md`
+
 ## Agenten (neu)
 
 Die von dir gewünschte Agenten-Pipeline wurde als Scaffold hinzugefügt:
