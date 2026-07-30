@@ -27,7 +27,12 @@ const OutputPanel = ({ result, onCopyPrompt }: OutputPanelProps) => {
         <ResultCard title="4. Prompt-Use-Case" content={result.useCase} />
         <ResultCard title="5. Generierter Masterprompt" content={result.masterPrompt} />
         <ResultCard title="6. Artefakt-Vorschlag" content={result.artifact} />
-        <ResultCard title="7. Nächster Schritt" content={result.nextStep} />
+        {result.productionPlan && (
+          <ResultCard title="7. Technischer Produktionsplan" content={result.productionPlan} />
+        )}
+        {result.assetSchema && <ResultCard title="8. Assetschema" content={result.assetSchema} />}
+        {result.reviewGate && <ResultCard title="9. Page-Gate / Mappe-Review" content={result.reviewGate} />}
+        <ResultCard title={result.productionPlan ? '10. Nächster Schritt' : '7. Nächster Schritt'} content={result.nextStep} />
       </div>
     </section>
   );
