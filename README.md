@@ -84,3 +84,9 @@ Die von dir gewünschte Agenten-Pipeline wurde als Scaffold hinzugefügt:
 - `agents/prompts/*.md`
 
 Startpunkt: `agents/README.md`
+
+## Produktionsplan / Assetschema
+
+Der technische Ablauf für Referenzprüfung, Dateilogik, Layoutanforderungen, Claude-Seitenprompts und Page-by-Page-Produktion ist in `docs/production-plan.md` dokumentiert.
+
+Leitprinzip: Erst planen und prüfen, dann pro Seite prompten, generieren und reviewen — keine Komplettgenerierung ohne Seitenfreigabe.
